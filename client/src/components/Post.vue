@@ -1,8 +1,11 @@
 <template>
   <div class="users">
     <button @click="fetchData">Click Me For Users</button>
-    <p v-if="users">{{ users }}</p>
-    <p v-if="res">{{ res }}</p>
+    <p v-if="users">
+      <ul>
+        <li v-for="user of users">{{ user.name }} {{ user.address }} {{ user.email }}</li>
+      </ul>
+    </p>
   </div>
 </template>
 <script>
@@ -14,7 +17,6 @@ export default {
   data() {
     return {
       users: '',
-      res: ''
     }
   },
   methods: {
@@ -27,9 +29,8 @@ export default {
         }
       })
         .then((response) => {
-          this.res = response.json()
           response.json().then((data) => {
-            this.users = JSON.stringfy(data)
+            this.users = data
           })
         })
         .catch((err) => {

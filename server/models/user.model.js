@@ -11,6 +11,12 @@ const User = function (user) {
 User.create = async (newUser, result) => {
   try {
     // primsa query here
+    await prisma.user.create({
+      data: {
+        name: newUser.name,
+        email: newUser.email,
+      }
+    })
 
     await prisma.$disconnect();
   } catch (err) {
@@ -30,8 +36,9 @@ User.findById = async (newUser, result) => {
 };
 User.getAll = async () => {
   try {
-    const users = await prisma.user.findMany({});
-    return users;
+    const allUsers = await prisma.user.findMany()
+    console.log('allUsers: ', allUsers)
+    return allUsers;
   } catch (err) {
     console.error(err);
     await prisma.$disconnect();

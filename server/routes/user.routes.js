@@ -14,7 +14,7 @@ module.exports = (app) => {
   var router = require("express").Router();
 
   // get all users
-  app.get("/users", users.findAll);
+  app.get("/api/users", users.findAll);
 
   app.use("/api/users", router);
 };
