@@ -1,15 +1,25 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-var cors = require("cors");
+require("dotenv").config();
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const cors = require("cors");
+// const jwt = require("jsonwebtoken");
+// const { auth } = require("express-openid-connect");
 
-var indexRouter = require("./routes/index");
-// var usersRouter = require("./routes/user.routes");
-// var moviesRouter = require("./routes/movies");
+// const config = {
+//   authRequired: false,
+//   auth0Logout: true,
+//   secret: process.env.SECRET,
+//   // baseUrl: process.env.BASE_URL,
+//   clientID: process.env.CLIENT_ID,
+//   issuerBaseURL: process.env.ISSUER_BASE_URL,
+// };
 
-var app = express();
+const indexRouter = require("./routes/index");
+
+const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -21,11 +31,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+// app.use(auth(config));
 
 app.use("/", indexRouter);
 require("./routes/user.routes.js")(app);
-// app.use("/users", usersRouter);
-// app.use("/movies", moviesRouter);
+require("./routes/post.routes.js")(app);
+require("./routes/rating.routes.js")(app);
+require("./routes/movie.routes.js")(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -42,6 +54,10 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+// app.get("/", (req, res) => {
+//   res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
+// });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

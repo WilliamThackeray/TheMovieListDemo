@@ -1,41 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  username    String
+  first_name  String
+  email       String
+  last_name   String?
+  bio         String?
+  ratings     Rating[]
+  posts       Post[]
+  comments    Comment[]
+  stars       Star[]
+  createdDate DateTime  @db.Date
+  followers   Follows[] @relation("follower")
+  following   Follows[] @relation("following")
+}
+
+model Rating {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  movie          Movie?   @relation(fields: [movieId], references: [id])
+  movie_title    String
+  average        Float
+  acting         Float
+  attraction     Float
+  cinemetography Float
+  dialogue       Float
+  directing      Float
+  editing        Float
+  plot           Float
+  soundtrack     Float
+  specialEffects Float
+  theme          Float
+  personalScore  Float
+  review         String
+  comments       String[]
+  stars          String[]
+  tot_stars      Int
+  user           User?    @relation(fields: [userId], references: [id])
+  userId         String?  @db.ObjectId
+  movieId        String?  @db.ObjectId
+  createdDate    DateTime @db.Date
 }
 
 model Post {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  slug     String    @unique
-  title    String
-  body     String
-  author   User      @relation(fields: [authorId], references: [id])
-  authorId String    @db.ObjectId
-  comments Comment[]
-}
-
-model User {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  email   String   @unique
-  name    String?
-  address Address?
-  posts   Post[]
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?   @db.ObjectId
+  content     String
+  tot_stars   Int
+  stars       Star[]
+  comments    Comment[]
+  createdDate DateTime  @db.Date
 }
 
 model Comment {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  comment String
-  post    Post   @relation(fields: [postId], references: [id])
-  postId  String @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?  @db.ObjectId
+  post        Post?    @relation(fields: [postId], references: [id])
+  postId      String?  @db.ObjectId
+  stars       Star[]
+  tot_stars   Int
+  createdDate DateTime @db.Date
 }
 
-// Address is an embedded document
-type Address {
-  street String
-  city   String
-  state  String
-  zip    String
+model Star {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  post        Post?    @relation(fields: [postId], references: [id])
+  postId      String?  @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  comment     Comment? @relation(fields: [commentId], references: [id])
+  commentId   String?  @db.ObjectId
+  createdDate DateTime @db.Date
+}
+
+model Movie {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  api_id             String
+  title              String
+  avg_overall        Float
+  avg_acting         Float
+  avg_attraction     Float
+  avg_cinemetography Float
+  avg_dialogue       Float
+  avg_directing      Float
+  avg_editing        Float
+  avg_plot           Float
+  avg_soundtrack     Float
+  avg_specialEffects Float
+  avg_theme          Float
+  ratings            Rating[]
+  createdDate        DateTime @db.Date
+}
+
+model Follows {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  follower    User   @relation("follower", fields: [followerId], references: [id])
+  followerId  String @db.ObjectId
+  following   User   @relation("following", fields: [followingId], references: [id])
+  followingId String @db.ObjectId
 }

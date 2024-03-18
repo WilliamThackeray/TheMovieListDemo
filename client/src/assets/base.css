@@ -34,6 +34,10 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  --tml-orange: #f59115;
+  --tml-black: #1d1d1d;
+  --tml-brown: #56332e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -78,8 +82,11 @@ body {
     'Fira Sans',
     'Droid Sans',
     'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
+    sans-serif,
+    'Caveat',
+    cursive,
+    'Raleway';
+  font-size: 16px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
